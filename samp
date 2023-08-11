@@ -1,4 +1,8 @@
 a=20
-b=10
 z=a+b
 print(z)
+
+b=40
+z=a+b
+print(z)
+
