@@ -1,0 +1,121 @@
+import tkinter as tk
+from tkinter import messagebox, simpledialog
+
+def toggle_text_area():
+    if not task_entry.winfo_ismapped():
+        task_entry.pack(pady=10)  # Show the text area
+        task_entry.focus_set()  # Set focus to the text area
+    else:
+        task_entry.pack_forget()  # Hide the text area
+
+def add_task(event=None):  # Accepts an optional event parameter
+    task = task_entry.get()
+    if task:
+        tasks.append({"task": task, "completed": False})
+        update_task_list()
+        task_entry.delete(0, tk.END)
+        toggle_text_area()  # Hide the text area after adding task
+    else:
+        messagebox.showwarning("Warning", "Please enter a task.")
+
+def edit_task(index):
+    new_text = simpledialog.askstring("Edit Task", "Edit the task:", initialvalue=tasks[index]["task"])
+    if new_text:
+        tasks[index]["task"] = new_text
+        update_task_list()
+
+def remove_task(index):
+    del tasks[index]
+    update_task_list()
+
+def mark_completed(index):
+    tasks[index]["completed"] = not tasks[index]["completed"]
+    update_task_list()
+
+def show_options(event, index):
+    options_menu.delete(0, tk.END)  # Clear existing options
+    options_menu.add_command(label="Edit", command=lambda i=index: edit_task(i))
+    options_menu.add_command(label="Remove", command=lambda i=index: remove_task(i))
+    options_menu.add_command(label="Mark Completed", command=lambda i=index: mark_completed(i))
+    options_menu.post(event.x_root, event.y_root)
+    selected_index[0] = index
+
+def hide_options():
+    options_menu.unpost()
+
+def update_task_list():
+    for frame in task_frames:
+        frame.destroy()
+
+    for index, task in enumerate(tasks):
+        task_frame = tk.Frame(tasks_frame, bg="orange")
+        task_frame = tk.Frame(tasks_frame, bg="grey")
+        task_frame.grid(sticky="ew", pady=(0, 4))
+        
+        # Add spacing after each task frame
+        task_frames.append(task_frame)        
+        task_label = tk.Label(
+            task_frame,
+            text=task["task"],
+            width=70,
+            borderwidth="2",
+            relief="solid",  # Add a solid border
+            anchor="w",
+            highlightbackground="black",
+            padx="5",
+            pady="7",
+            bg="Gold",
+            wraplength=600
+        )
+       
+        if task["completed"]:
+            task_label.configure(bg='light green', text='✓ ' + task["task"])
+        task_label.bind("<Button-3>", lambda event, i=index: show_options(event, i))
+        task_label.grid(sticky="ew")
+
+# Create the main application window
+app = tk.Tk()
+app.title("To-Do List")
+app.geometry("720x1020")
+app.configure(bg="light cyan")
+
+heading_label = tk.Label(
+    app,
+    text="TO DO LIST'S",
+    fg="Dodger blue",
+    font=("Helvetica", 44, "bold"),
+    # Text color
+    bg="sky Blue",   # Background color
+    padx=20,
+    pady=10,
+)
+heading_label.pack(fill=tk.X, pady=(20, 20))
+
+# Create and place widgets
+tasks_frame = tk.Frame(app)
+tasks_frame.pack(pady=(20, 20))
+
+tasks = []  # List of tasks, each task is a dictionary
+task_frames = []  # Store task frames for update
+
+selected_index = [-1]  # Store the selected task's index
+
+# Create the context menu
+options_menu = tk.Menu(app, tearoff=0)
+
+app.bind("<Button-1>", lambda event: hide_options())  # Hide options menu on left click
+
+update_task_list()
+
+# Plus button at the bottom right corner of the window
+add_button = tk.Button(app, text="➕", command=toggle_text_area)
+add_button.pack(anchor='se', padx=10, pady=10)  # Place at bottom right
+
+# Create and place text area
+task_entry = tk.Entry(app, width=40)
+task_entry.pack_forget()  # Hide the text area initially
+
+# Bind Enter key to the text area
+task_entry.bind("<Return>", add_task)
+
+app.mainloop()
