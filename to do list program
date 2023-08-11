@@ -51,7 +51,6 @@ def update_task_list():
         task_frame = tk.Frame(tasks_frame, bg="orange")
         task_frame = tk.Frame(tasks_frame, bg="grey")
         task_frame.grid(sticky="ew", pady=(0, 4))
-        
         # Add spacing after each task frame
         task_frames.append(task_frame)        
         task_label = tk.Label(
