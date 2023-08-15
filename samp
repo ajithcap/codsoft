@@ -1,8 +1,0 @@
-a=20
-z=a+b
-print(z)
-
-b=40
-z=a+b
-print(z)
-
