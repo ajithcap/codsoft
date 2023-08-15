@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 from kivy.app import App
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.gridlayout import GridLayout
@@ -81,6 +81,3 @@ class CalculatorApp(App):
 if __name__ == '__main__':
     app = CalculatorApp()
     app.run()
-=======
-
->>>>>>> cd974b7e07b3c3f78760130e885476f77ac3fa15
